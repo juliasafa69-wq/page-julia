@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Julia - Minha Página</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Modal de Verificação de Idade -->
+    <div class="age-verification-modal" id="ageVerificationModal">
+      <div class="age-verification-content">
+        <div class="age-verification-header">
+          <div class="age-icon">??</div>
+          <h2>Verificação de Idade</h2>
+        </div>
+        <div class="age-verification-body">
+          <p><strong>Este site contém conteúdo adulto.</strong></p>
+          <p>
+            Você deve ter pelo menos <strong>18 anos</strong> para continuar.
+          </p>
+          <div class="age-form">
+            <label>Data de Nascimento:</label>
+            <div class="date-inputs">
+              <select id="birthDay" required>
+                <option value="">Dia</option>
+              </select>
+              <select id="birthMonth" required>
+                <option value="">Mês</option>
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+              </select>
+              <select id="birthYear" required>
+                <option value="">Ano</option>
+              </select>
+            </div>
+          </div>
+          <div class="age-buttons">
+            <button onclick="verifyAge()" class="age-btn-confirm">
+              ? Sou maior de 18
+            </button>
+            <button onclick="exitSite()" class="age-btn-exit">
+              ? Sou menor de 18
+            </button>
+          </div>
+          <p class="age-disclaimer">
+            <small
+              >Ao continuar, você confirma ter mais de 18 anos e concorda com
+              nossos <a href="#" onclick="openTerms()">Termos de Uso</a> e
+              <a href="#" onclick="openPrivacy()">Política de Privacidade</a
+              >.</small
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">Julia Safa</div>
+        <div class="header-icons">
+          <div
+            class="header-icon notification-badge relative admin-only"
+            onclick="toggleNotifications()"
+            style="display: none"
+          >
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="notificationCount">0</span>
+            <div class="notifications-dropdown" id="notificationsDropdown">
+              <div class="notifications-header">
+                ?? Notificações
+                <span
+                  class="mark-all-read"
+                  onclick="event.stopPropagation(); markAllNotificationsAsRead()"
+                  >Marcar todas como lidas</span
+                >
+              </div>
+              <div id="notificationsList">
+                <div class="empty-placeholder">Nenhuma notificação ainda.</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="header-icon notification-badge relative"
+            onclick="toggleMessages()"
+          >
+            <i class="fas fa-comments"></i>
+            <span class="badge hidden" id="messagesCount">0</span>
+            <div class="messages-dropdown" id="messagesDropdown">
+              <div class="messages-header">Mensagens</div>
+              <div id="messagesList">
+                <div class="empty-placeholder">Nenhuma mensagem ainda.</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="header-icon notification-badge relative admin-only"
+            id="friendRequestsIcon"
+            onclick="toggleFriendRequests()"
+            title="Solicitações de Amizade"
+            style="display: none"
+          >
+            <i class="fas fa-user-friends"></i>
+            <span class="badge hidden" id="friendRequestsBadge">0</span>
+            <div class="friend-requests-dropdown" id="friendRequestsDropdown">
+              <div class="friend-requests-header">Solicitações de Amizade</div>
+              <div id="friendRequestsHeaderList">
+                <div class="empty-placeholder">
+                  Nenhuma solicitação pendente.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Minhas Solicitações Enviadas (apenas visitantes) -->
+          <div
+            class="header-icon notification-badge relative visitor-only"
+            onclick="toggleMySentRequests()"
+            title="Minhas Solicitações"
+            id="mySentRequestsIcon"
+            style="display: none"
+          >
+            <i class="fas fa-paper-plane"></i>
+            <span class="badge hidden" id="mySentRequestsBadge">0</span>
+            <div class="friend-requests-dropdown" id="mySentRequestsDropdown">
+              <div class="friend-requests-header">Mis Solicitudes Enviadas</div>
+              <div id="mySentRequests">
+                <div class="empty-placeholder">
+                  No has enviado solicitudes aún.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="header-icon" onclick="openSettings()">
+            <i class="fas fa-cog"></i>
+          </div>
+          <div
+            class="header-icon visitor-only"
+            id="authButtonIcon"
+            onclick="openAuthModal()"
+            title="Iniciar sesión / Registrarse"
+            style="display: none"
+          >
+            <i class="fas fa-user-lock"></i>
+          </div>
+          <div
+            class="header-icon security-icon"
+            onclick="openSecurityCenter()"
+            title="Central de Segurança"
+          >
+            <i class="fas fa-shield-alt"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast de Autenticação (mensagem flutuante) -->
+    <div
+      id="authToast"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 20px 25px;
+        max-width: 350px;
+        z-index: 10000;
+        border-left: 4px solid var(--primary-color);
+      "
+    >
+      <div style="display: flex; align-items: start; gap: 12px">
+        <div style="font-size: 24px">??</div>
+        <div style="flex: 1">
+          <p
+            style="
+              margin: 0 0 8px 0;
+              font-size: 15px;
+              font-weight: 500;
+              color: #1c1e21;
+            "
+          >
+            Holá amore
+          </p>
+          <p
+            style="margin: 0; font-size: 13px; line-height: 1.5; color: #65676b"
+          >
+            Necesitas iniciar sesión para que el sistema sepa que eres tú en la
+            próxima sesión.<br /><br />
+            Si aún no tienes cuenta, regístrate ??<br /><br />
+            Botón de acceso ?? en la barra junto al ícono de configuración ?? ??
+          </p>
+        </div>
+        <button
+          onclick="closeAuthToast()"
+          style="
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+          "
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <!-- Container principal -->
+    <div class="container">
+      <!-- Sidebar esquerda -->
+      <aside class="left-sidebar">
+        <!-- Perfil -->
+        <div class="profile-card">
+          <img
+            src="https://picsum.photos/80?random=10"
+            alt="Foto do perfil"
+            class="profile-pic"
+            onclick="changeProfilePic()"
+            id="profilePic"
+          />
+          <h3 class="profile-name" onclick="editProfileName()" id="profileName">
+            Julia Safa
+          </h3>
+          <div class="profile-status" id="profileStatus">
+            <span
+              class="status-indicator status-online"
+              id="statusIndicator"
+            ></span>
+            <span class="status-text status-online-text" id="statusText"
+              >Online</span
+            >
+          </div>
+          <div class="stats">
+            <div class="stat" onclick="openFriendsModal()">
+              <div class="stat-number" id="friendsCount">0</div>
+              <div class="stat-label">Amigos</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number" id="postsCount">0</div>
+              <div class="stat-label">Posts</div>
+            </div>
+            <div class="stat" onclick="openGallery('photos')">
+              <div class="stat-number" id="photosCount">0</div>
+              <div class="stat-label">Fotos</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Interação -->
+        <div class="interaction-section">
+          <div class="interaction-buttons">
+            <div class="interaction-button-container">
+              <button
+                class="jewel-button follow-button"
+                id="followButton"
+                onclick="toggleFollow()"
+                title="Seguir página"
+              >
+                <i class="fas fa-user-plus" id="followIcon"></i>
+              </button>
+              <div class="button-counter">
+                <span class="counter-number" style="opacity: 0">0</span>
+                <span class="counter-label">seguir</span>
+              </div>
+            </div>
+
+            <div class="interaction-button-container">
+              <button
+                class="jewel-button like-button"
+                id="likeButton"
+                onclick="toggleProfileLike()"
+                title="Curtir página"
+              >
+                <i class="fas fa-heart" id="likeIcon"></i>
+              </button>
+              <div class="button-counter">
+                <span class="counter-number" id="likesCount">0</span>
+                <span class="counter-label">curtidas</span>
+              </div>
+            </div>
+
+            <div class="interaction-button-container">
+              <button
+                class="jewel-button support-button"
+                id="supportButton"
+                onclick="openSupportModal()"
+                title="Apoiar criadora"
+              >
+                <i class="fas fa-gem" id="supportIcon"></i>
+              </button>
+              <div class="button-counter">
+                <span class="counter-number" style="opacity: 0">0</span>
+                <span class="counter-label">apoiar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de amigos -->
+        <div class="friends-list">
+          <div class="friends-header">
+            <span class="friends-title">Amigos</span>
+            <i class="fas fa-search text-muted cursor-pointer"></i>
+          </div>
+          <div id="friendsList">
+            <div class="empty-placeholder">
+              Você ainda não tem amigos adicionados.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Conteúdo principal -->
+      <main class="main-content">
+        <!-- Criar post -->
+        <div class="create-post">
+          <div class="create-post-header">
+            <img
+              src="https://picsum.photos/40?random=11"
+              alt="Sua foto"
+              class="profile-pic profile-pic-40"
+            />
+            <input
+              type="text"
+              class="create-post-input"
+              placeholder="No que você está pensando, Julia?"
+              onclick="openCreatePostModal()"
+            />
+          </div>
+          <div class="create-post-actions">
+            <div class="post-action video-action" onclick="uploadReel()">
+              <i class="fas fa-video"></i>
+              <span>Vídeo/Reel</span>
+            </div>
+            <div class="post-action photo-action" onclick="uploadPhoto()">
+              <i class="fas fa-image"></i>
+              <span>Foto</span>
+            </div>
+            <div class="post-action feeling-action" onclick="addFeeling()">
+              <i class="fas fa-smile"></i>
+              <span>Sentimento</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reels Section -->
+        <div class="reels-section">
+          <div
+            class="section-title reels-title cursor-pointer"
+            onclick="openGallery('reels')"
+          >
+            ?? Reels de Julia
+          </div>
+          <div class="reels-grid" id="reelsGrid">
+            <div class="reels-placeholder">
+              Ainda não há reels. Faça upload do seu primeiro reel!
+            </div>
+          </div>
+        </div>
+
+        <!-- Posts -->
+        <div id="postsContainer">
+          <div class="post-placeholder">
+            <i class="fas fa-plus-circle post-icon"></i>
+            <h3>Bem-vinda à sua página!</h3>
+            <p>Comece criando sua primeira publicação usando a área acima.</p>
+          </div>
+        </div>
+
+        <!-- Banner entre conteúdo -->
+        <div class="content-ad">
+          <div class="ad-container" id="ad-content">
+            <div class="ad-placeholder">
+              <div class="ad-label">Publicidade</div>
+              <div class="ad-content">
+                <div class="ad-sample content-banner">
+                  ?? Banner no Feed - 468x60px
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Sidebar direita -->
+      <aside class="right-sidebar">
+        <!-- Espaço para Anúncios -->
+        <div class="friends-requests">
+          <div class="ad-container" id="ad-banner-1">
+            <div class="ad-placeholder">
+              <div class="ad-label">Publicidade</div>
+              <div class="ad-content">
+                <!-- Espaço para Google AdSense ou outro anúncio -->
+                <div class="ad-sample">
+                  ?? Espaço para Banner<br />
+                  300x250px
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Espaço para Anúncios Adicional -->
+        <div class="friends-requests">
+          <div class="ad-container" id="ad-banner-extra">
+            <div class="ad-placeholder">
+              <div class="ad-label">Publicidade</div>
+              <div class="ad-content">
+                <!-- Espaço para mais anúncios -->
+                <div class="ad-sample">
+                  ?? Espaço Extra para Banner<br />
+                  300x250px
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão para outras pessoas enviarem solicitação -->
+        <div class="friends-requests">
+          <div class="section-title">?? Visitante</div>
+          <button onclick="sendFriendRequest()" class="test-button primary">
+            Enviar solicitação para Julia Safa
+          </button>
+        </div>
+
+        <!-- Banner Inferior -->
+        <div class="friends-requests">
+          <div class="ad-container" id="ad-banner-2">
+            <div class="ad-placeholder">
+              <div class="ad-label">Publicidade</div>
+              <div class="ad-content ad-horizontal">
+                <!-- Banner 728x90 (leaderboard) -->
+                <div class="ad-sample horizontal">
+                  ?? Banner Horizontal - 728x90px
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Banner Flutuante (Sticky) -->
+    <div class="floating-ad" id="floating-ad">
+      <div class="ad-container">
+        <div class="ad-placeholder">
+          <div class="ad-label">Publicidade</div>
+          <button class="ad-close" onclick="closeFloatingAd()">&times;</button>
+          <div class="ad-content">
+            <div class="ad-sample">
+              ?? Anúncio Flutuante<br />
+              320x100px
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget chat-position-1" id="chatWidget">
+      <div class="chat-header">
+        <div class="chat-status">
+          <span id="chatTitle">Chat</span>
+          <div class="chat-status-flex">
+            <span
+              class="chat-status-indicator chat-online"
+              id="chatStatusIndicator"
+            ></span>
+            <span class="chat-status-text" id="chatStatusText">Online</span>
+          </div>
+        </div>
+        <div class="flex gap-5">
+          <button onclick="minimizeChat('chatWidget')" class="chat-button-base">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button onclick="closeChat('chatWidget')" class="chat-button-base">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-placeholder">Selecione um amigo para conversar</div>
+      </div>
+      <div class="chat-input-area">
+        <input
+          type="text"
+          class="chat-input"
+          placeholder="Digite sua mensagem..."
+          onkeypress="handleChatEnter(event)"
+        />
+      </div>
+    </div>
+
+    <!-- Container para chats minimizados -->
+    <div id="minimizedChats"></div>
+
+    <!-- Modais -->
+
+    <!-- Modal Criar Post -->
+    <div class="modal" id="createPostModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Criar publicação</h3>
+          <button class="close-modal" onclick="closeModal('createPostModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-profile-flex">
+          <img
+            src="https://picsum.photos/40?random=12"
+            alt="Sua foto"
+            class="profile-pic modal-profile-pic"
+          />
+          <div>
+            <div class="modal-profile-name">Julia Safa</div>
+            <select id="postPrivacy" class="modal-privacy-select">
+              <option value="public">?? Público</option>
+              <option value="friends">?? Amigos</option>
+              <option value="private">?? Somente eu</option>
+            </select>
+          </div>
+        </div>
+        <textarea
+          id="postText"
+          placeholder="No que você está pensando?"
+          class="modal-textarea-special"
+        ></textarea>
+        <div class="media-container">
+          <input
+            type="file"
+            id="postImage"
+            accept="image/*,video/*"
+            class="hidden"
+            onchange="previewMedia(this)"
+          />
+          <div id="mediaPreview"></div>
+          <button
+            type="button"
+            onclick="document.getElementById('postImage').click()"
+            class="media-button"
+          >
+            ?? Adicionar foto/vídeo
+          </button>
+        </div>
+        <button onclick="createPost()" class="modal-button">Publicar</button>
+      </div>
+    </div>
+
+    <!-- Modal Autenticação (Login/Registro) -->
+    <div class="modal" id="authModal">
+      <div class="modal-content" style="max-width: 420px">
+        <div class="modal-header">
+          <h3>?? Autenticación</h3>
+          <button class="close-modal" onclick="closeModal('authModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 25px" id="authModalBody">
+          <!-- Conteúdo de login (padrão) -->
+          <div id="authLoginForm">
+            <p
+              style="
+                text-align: center;
+                color: #65676b;
+                margin-bottom: 20px;
+                font-size: 14px;
+              "
+            >
+              ??? Registro e inicio de sesión todo por aquí<br />
+              <span style="font-size: 12px; color: #999">
+                Primer envío = registro automático<br />
+                Segundo envío = inicio de sesión
+              </span>
+            </p>
+
+            <div style="margin-bottom: 15px">
+              <label
+                style="display: block; margin-bottom: 5px; font-weight: 500"
+                >Correo electrónico</label
+              >
+              <input
+                type="email"
+                id="authEmail"
+                class="settings-input"
+                placeholder="tu@correo.com"
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                "
+              />
+            </div>
+
+            <div style="margin-bottom: 20px">
+              <label
+                style="display: block; margin-bottom: 5px; font-weight: 500"
+                >Contraseña</label
+              >
+              <input
+                type="password"
+                id="authPassword"
+                class="settings-input"
+                placeholder="••••••••"
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                "
+              />
+            </div>
+
+            <button
+              onclick="handleAuth()"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 500;
+                margin-bottom: 10px;
+              "
+            >
+              Entrar
+            </button>
+
+            <button
+              onclick="showPasswordRecovery()"
+              style="
+                width: 100%;
+                padding: 8px;
+                background: transparent;
+                color: var(--primary-color);
+                border: none;
+                cursor: pointer;
+                font-size: 13px;
+                text-decoration: underline;
+              "
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+          </div>
+
+          <!-- Conteúdo de logout (quando logado) -->
+          <div id="authLoggedIn" style="display: none; text-align: center">
+            <p style="color: #65676b; margin-bottom: 10px; font-size: 14px">
+              ? Ya has iniciado sesión
+            </p>
+            <p
+              style="
+                color: var(--primary-color);
+                margin-bottom: 20px;
+                font-size: 16px;
+                font-weight: 500;
+              "
+              id="loggedUserEmail"
+            >
+              usuario@email.com
+            </p>
+            <button
+              onclick="logoutUser()"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 500;
+              "
+            >
+              ?? Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Configurações -->
+    <div class="modal" id="settingsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>?? Configurações</h3>
+          <button class="close-modal" onclick="closeModal('settingsModal')">
+            &times;
+          </button>
+        </div>
+        <div class="settings-section admin-only">
+          <label class="settings-label">Nome do Perfil:</label>
+          <input type="text" id="newProfileName" class="settings-input" />
+        </div>
+
+        <div class="settings-section admin-only">
+          <h4 style="color: var(--primary-color); margin-bottom: 15px">
+            ?? Admin
+          </h4>
+          <p style="color: #65676b; margin-bottom: 15px; font-size: 14px">
+            Sair do modo administrador.
+          </p>
+          <button onclick="logoutAdmin()" class="admin-logout-btn">
+            ?? Logout Admin
+          </button>
+        </div>
+
+        <div class="settings-section visitor-allowed">
+          <h4 style="color: var(--primary-color); margin-bottom: 15px">
+            ?? Acesso Admin
+          </h4>
+          <p style="color: #65676b; margin-bottom: 15px; font-size: 14px">
+            Digite a senha para ativar modo administrador.
+          </p>
+          <button onclick="promptAdminPassword()" class="modal-button">
+            ?? Ativar Admin
+          </button>
+        </div>
+
+        <div class="language-selector visitor-allowed">
+          <label class="settings-label-10">?? Idioma:</label>
+          <div class="language-options">
+            <div
+              class="language-option"
+              onclick="changeLanguage('pt')"
+              data-lang="pt"
+            >
+              ???? Português
+            </div>
+            <div
+              class="language-option"
+              onclick="changeLanguage('es')"
+              data-lang="es"
+            >
+              ???? Español
+            </div>
+            <div
+              class="language-option"
+              onclick="changeLanguage('en-us')"
+              data-lang="en-us"
+            >
+              ???? English (US)
+            </div>
+            <div
+              class="language-option"
+              onclick="changeLanguage('en-uk')"
+              data-lang="en-uk"
+            >
+              ???? English (UK)
+            </div>
+          </div>
+        </div>
+        <div class="settings-section admin-only">
+          <label class="settings-label-10">?? Status Online:</label>
+          <div class="online-status-container">
+            <input
+              type="checkbox"
+              id="showOnlineStatus"
+              onchange="toggleOnlineStatus()"
+              class="checkbox-large"
+            />
+            <span class="status-text">Mostrar quando estou online</span>
+          </div>
+          <p class="status-description">
+            Quando desativado, você aparecerá como offline para outros usuários
+          </p>
+        </div>
+        <div class="settings-section admin-only">
+          <label class="settings-label">Foto do Perfil:</label>
+          <input
+            type="file"
+            id="newProfilePic"
+            accept="image/*"
+            onchange="updateProfilePic(this)"
+          />
+        </div>
+        <div class="settings-section admin-only">
+          <label class="settings-label-10"
+            >?? Configurações de Privacidade:</label
+          >
+          <div class="privacy-options">
+            <div class="privacy-option">
+              <input
+                type="checkbox"
+                id="hideStatsCount"
+                onchange="togglePrivacy('stats')"
+              />
+              <span>Ocultar contador de amigos</span>
+            </div>
+            <div class="privacy-option">
+              <input
+                type="checkbox"
+                id="hideFriendsList"
+                onchange="togglePrivacy('friendsList')"
+              />
+              <span>Ocultar lista de amigos</span>
+            </div>
+            <div class="privacy-option">
+              <input
+                type="checkbox"
+                id="hideFollowers"
+                onchange="togglePrivacy('followers')"
+              />
+              <span>Ocultar seguidores</span>
+            </div>
+            <div class="privacy-option">
+              <input
+                type="checkbox"
+                id="privateProfile"
+                onchange="togglePrivacy('profile')"
+              />
+              <span>Perfil privado (só amigos veem posts)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section visitor-allowed">
+          <label class="settings-label-10">?? Cor do Tema:</label>
+          <div class="color-options">
+            <div
+              class="color-option color-blue active"
+              onclick="changeThemeColor('#1877f2', '#166fe5')"
+              title="Azul Facebook"
+            ></div>
+            <div
+              class="color-option color-purple"
+              onclick="changeThemeColor('#8b5cf6', '#7c3aed')"
+              title="Roxo"
+            ></div>
+            <div
+              class="color-option color-green"
+              onclick="changeThemeColor('#10b981', '#059669')"
+              title="Verde"
+            ></div>
+            <div
+              class="color-option color-pink"
+              onclick="changeThemeColor('#f59e0b', '#d97706')"
+              title="Laranja"
+            ></div>
+            <div
+              class="color-option color-rose"
+              onclick="changeThemeColor('#ec4899', '#db2777')"
+              title="Rosa"
+            ></div>
+            <div
+              class="color-option color-red"
+              onclick="changeThemeColor('#ef4444', '#dc2626')"
+              title="Vermelho"
+            ></div>
+            <div
+              class="color-option color-dark"
+              onclick="changeThemeColor('#374151', '#1f2937')"
+              title="Escuro"
+            ></div>
+          </div>
+        </div>
+        <button onclick="saveSettings()" class="save-button">Salvar</button>
+      </div>
+    </div>
+
+    <!-- Modal Galeria de Fotos -->
+    <div class="gallery-modal" id="photosGallery">
+      <div class="gallery-content">
+        <div class="gallery-header">
+          <h3>?? Galeria de Fotos</h3>
+          <button class="close-modal" onclick="closeGallery()">&times;</button>
+        </div>
+        <div class="gallery-grid" id="photosGrid">
+          <!-- Fotos serão adicionadas aqui -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Galeria de Reels -->
+    <div class="gallery-modal" id="reelsGallery">
+      <div class="gallery-content">
+        <div class="gallery-header">
+          <h3>?? Galeria de Reels</h3>
+          <button class="close-modal" onclick="closeGallery()">&times;</button>
+        </div>
+        <div class="gallery-grid" id="reelsGalleryGrid">
+          <!-- Reels serão adicionados aqui -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Lista de Amigos -->
+    <div class="gallery-modal" id="friendsModal">
+      <div class="gallery-content">
+        <div class="gallery-header">
+          <h3>?? Lista de Amigos</h3>
+          <button class="close-modal" onclick="closeFriendsModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-padding" id="friendsModalContent">
+          <!-- Lista de amigos será adicionada aqui -->
+          <div id="lista-amigos">
+            <h3>Meus Amigos</h3>
+            <ul id="amigos-ul">
+              <li>Carregando amigos...</li>
+            </ul>
+
+            <!-- Área de edição de apelido (só para Julia) -->
+            <div
+              id="edit-nickname-area"
+              style="
+                display: none;
+                margin-top: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+              "
+            >
+              <h4>?? Editar Apelido</h4>
+              <div style="margin-bottom: 10px">
+                <strong>Amigo:</strong> <span id="edit-friend-name"></span>
+              </div>
+              <div style="margin-bottom: 10px">
+                <label>Novo apelido:</label>
+                <input
+                  type="text"
+                  id="novo-apelido"
+                  placeholder="Digite um apelido"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    margin-top: 5px;
+                  "
+                />
+              </div>
+              <div style="display: flex; gap: 10px">
+                <button
+                  onclick="atualizarApelido()"
+                  style="
+                    padding: 8px 16px;
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                  "
+                >
+                  ?? Salvar Apelido
+                </button>
+                <button
+                  onclick="cancelarEdicaoApelido()"
+                  style="
+                    padding: 8px 16px;
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                  "
+                >
+                  ? Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualizador de Mídia -->
+    <div class="media-viewer" id="mediaViewer">
+      <div class="media-content" id="mediaContent">
+        <!-- Mídia será exibida aqui -->
+        <div class="media-actions">
+          <button class="media-action" onclick="toggleMediaLike()">
+            <i class="fas fa-thumbs-up"></i>
+            <span>Curtir</span>
+          </button>
+          <button class="media-action" onclick="showMediaComments()">
+            <i class="fas fa-comment"></i>
+            <span>Comentar</span>
+          </button>
+          <button class="media-action" onclick="shareMedia()">
+            <i class="fas fa-share"></i>
+            <span>Compartilhar</span>
+          </button>
+          <div class="post-menu">
+            <button class="media-action menu-dots" onclick="toggleMediaMenu()">
+              <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <div class="dropdown-menu" id="mediaDropdown">
+              <button class="dropdown-item" onclick="changeMediaPrivacy()">
+                Alterar privacidade
+              </button>
+              <button class="dropdown-item danger" onclick="deleteMedia()">
+                Excluir
+              </button>
+            </div>
+          </div>
+          <button class="media-action" onclick="closeMediaViewer()">
+            <i class="fas fa-times"></i>
+            <span>Fechar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal da Foto de Perfil -->
+    <div class="profile-pic-modal" id="profilePicModal">
+      <div class="profile-pic-content">
+        <div class="profile-pic-header">
+          <h3>Foto do Perfil</h3>
+          <img
+            src="https://picsum.photos/200?random=13"
+            alt="Foto atual"
+            class="current-profile-pic"
+            id="currentProfilePic"
+          />
+        </div>
+        <div class="profile-pic-options">
+          <button class="profile-pic-option" onclick="viewCurrentProfilePic()">
+            <i class="fas fa-eye"></i>
+            <span>Ver foto de perfil</span>
+          </button>
+          <button class="profile-pic-option" onclick="uploadNewProfilePic()">
+            <i class="fas fa-camera"></i>
+            <span>Adicionar nova foto</span>
+          </button>
+          <button class="profile-pic-option" onclick="selectFromGallery()">
+            <i class="fas fa-images"></i>
+            <span>Escolher da galeria</span>
+          </button>
+          <button class="profile-pic-option" onclick="closeProfilePicModal()">
+            <i class="fas fa-times"></i>
+            <span>Cancelar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Crop -->
+    <div class="crop-modal" id="cropModal">
+      <div class="crop-content">
+        <div class="crop-header">
+          <h3>Posicionar foto</h3>
+          <button class="close-modal" onclick="closeCropModal()">
+            &times;
+          </button>
+        </div>
+        <div class="crop-area">
+          <div class="crop-preview" id="cropPreview">
+            <img
+              id="cropImage"
+              class="crop-image"
+              src=""
+              alt="Imagem para corte"
+            />
+            <div class="crop-overlay" id="cropOverlay">
+              <div class="crop-handle crop-handle-nw" data-direction="nw"></div>
+              <div class="crop-handle crop-handle-ne" data-direction="ne"></div>
+              <div class="crop-handle crop-handle-sw" data-direction="sw"></div>
+              <div class="crop-handle crop-handle-se" data-direction="se"></div>
+              <div class="crop-handle crop-handle-n" data-direction="n"></div>
+              <div class="crop-handle crop-handle-s" data-direction="s"></div>
+              <div class="crop-handle crop-handle-w" data-direction="w"></div>
+              <div class="crop-handle crop-handle-e" data-direction="e"></div>
+            </div>
+          </div>
+        </div>
+        <div class="crop-controls">
+          <button class="crop-btn crop-btn-cancel" onclick="closeCropModal()">
+            Cancelar
+          </button>
+          <button class="crop-btn crop-btn-save" onclick="saveCroppedImage()">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Seleção da Galeria -->
+    <div class="gallery-modal" id="gallerySelector">
+      <div class="gallery-content">
+        <div class="gallery-header">
+          <h3>Escolher da galeria</h3>
+          <button class="close-modal" onclick="closeGallerySelector()">
+            &times;
+          </button>
+        </div>
+        <div class="gallery-selector" id="gallerySelectorContent">
+          <!-- Fotos da galeria serão exibidas aqui -->
+        </div>
+        <div class="crop-controls">
+          <button
+            class="crop-btn crop-btn-cancel"
+            onclick="closeGallerySelector()"
+          >
+            Cancelar
+          </button>
+          <button
+            class="crop-btn crop-btn-save"
+            onclick="useSelectedGalleryImage()"
+            id="useGalleryBtn"
+            disabled
+          >
+            Usar foto
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Segurança -->
+    <div class="modal" id="securityModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>??? Central de Segurança</h3>
+          <button class="close-modal" onclick="closeSecurityModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-padding">
+          <div class="security-section">
+            <h4>??? Status de Segurança</h4>
+            <div class="security-status">
+              <div class="status-item">
+                <span class="status-icon">?</span>
+                <span>Proteção anti-bot ativa</span>
+              </div>
+              <div class="status-item">
+                <span class="status-icon">?</span>
+                <span>Rate limiting configurado</span>
+              </div>
+              <div class="status-item">
+                <span class="status-icon">?</span>
+                <span>Validação de formulários</span>
+              </div>
+              <div class="status-item">
+                <span class="status-icon">?</span>
+                <span>Headers de segurança</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="security-section">
+            <h4>?? Denunciar Conteúdo</h4>
+            <button onclick="reportContent()" class="security-btn">
+              ?? Denunciar Conteúdo Inadequado
+            </button>
+            <button onclick="blockUser()" class="security-btn">
+              ?? Bloquear Usuário
+            </button>
+          </div>
+
+          <div class="security-section">
+            <h4>?? Monitor de Segurança</h4>
+            <div class="security-monitor">
+              <div class="monitor-item">
+                <span class="monitor-label">?? Tentativas de bot:</span>
+                <span class="monitor-value" id="botAttempts">0 bloqueadas</span>
+              </div>
+              <div class="monitor-item">
+                <span class="monitor-label">?? Ataques de força bruta:</span>
+                <span class="monitor-value" id="bruteForce">0 detectados</span>
+              </div>
+              <div class="monitor-item">
+                <span class="monitor-label">?? Tráfego suspeito:</span>
+                <span class="monitor-value" id="suspiciousTraffic">Normal</span>
+              </div>
+              <button onclick="refreshSecurityStatus()" class="monitor-btn">
+                ?? Atualizar Status
+              </button>
+            </div>
+          </div>
+
+          <div class="security-section">
+            <h4>?? Ferramentas de Segurança</h4>
+            <button onclick="runSecurityScan()" class="security-tool-btn">
+              ?? Executar Scan de Segurança
+            </button>
+            <button onclick="clearSuspiciousData()" class="security-tool-btn">
+              ?? Limpar Dados Suspeitos
+            </button>
+            <button onclick="activateFirewall()" class="security-tool-btn">
+              ?? Ativar Firewall Avançado
+            </button>
+            <button onclick="contactSupport()" class="help-btn">
+              ?? Suporte Técnico
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Termos de Uso -->
+    <div class="modal" id="termsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>?? Termos de Uso</h3>
+          <button class="close-modal" onclick="closeTermsModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-padding">
+          <div class="terms-content">
+            <h4>1. Aceitação dos Termos</h4>
+            <p>
+              Ao usar esta plataforma, você concorda com todos os termos aqui
+              descritos.
+            </p>
+
+            <h4>2. Restrições de Idade</h4>
+            <p>
+              <strong
+                >Este serviço é destinado APENAS para usuários com 18 anos ou
+                mais.</strong
+              >
+            </p>
+
+            <h4>3. Conteúdo Permitido</h4>
+            <p>
+              • Conteúdo original e respeitoso<br />
+              • Interações cordiais<br />
+              • Respeito às diretrizes da comunidade
+            </p>
+
+            <h4>4. Conteúdo Proibido</h4>
+            <p>
+              • Spam ou conteúdo irrelevante<br />
+              • Discurso de ódio<br />
+              • Conteúdo ilegal<br />
+              • Assédio ou bullying
+            </p>
+
+            <h4>5. Privacidade</h4>
+            <p>
+              Seus dados são protegidos conforme nossa Política de Privacidade.
+            </p>
+
+            <h4>6. Suspensão de Conta</h4>
+            <p>
+              Violações podem resultar em suspensão temporária ou permanente.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Política de Privacidade -->
+    <div class="modal" id="privacyModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>?? Política de Privacidade</h3>
+          <button class="close-modal" onclick="closePrivacyModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-padding">
+          <div class="privacy-content">
+            <h4>Coleta de Informações</h4>
+            <p>
+              Coletamos apenas informações necessárias para o funcionamento da
+              plataforma:
+            </p>
+            <ul>
+              <li>Nome e foto de perfil</li>
+              <li>Posts e comentários públicos</li>
+              <li>Interações sociais (curtidas, compartilhamentos)</li>
+            </ul>
+
+            <h4>Uso das Informações</h4>
+            <p>Suas informações são usadas para:</p>
+            <ul>
+              <li>Personalizar sua experiência</li>
+              <li>Melhorar nossos serviços</li>
+              <li>Garantir segurança da plataforma</li>
+            </ul>
+
+            <h4>Compartilhamento</h4>
+            <p>
+              <strong
+                >NÃO vendemos ou compartilhamos seus dados pessoais</strong
+              >
+              com terceiros sem seu consentimento.
+            </p>
+
+            <h4>Cookies</h4>
+            <p>
+              Utilizamos cookies para melhorar a experiência do usuário e
+              lembrar suas preferências.
+            </p>
+
+            <h4>Seus Direitos</h4>
+            <p>Você pode a qualquer momento:</p>
+            <ul>
+              <li>Acessar seus dados</li>
+              <li>Corrigir informações</li>
+              <li>Deletar sua conta</li>
+              <li>Exportar seus dados</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Apoio/Doação -->
+    <div class="modal" id="supportModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>?? Apoie Julia Safa</h3>
+          <button class="close-modal" onclick="closeSupportModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-padding">
+          <p class="support-text">
+            Sua doação ajuda a manter esta plataforma ativa e criar mais
+            conteúdo incrível!
+          </p>
+
+          <div class="donation-options">
+            <button onclick="processDonation('5.00')" class="donation-btn">
+              R$ 5,00 ?
+            </button>
+            <button onclick="processDonation('10.00')" class="donation-btn">
+              R$ 10,00 ??
+            </button>
+            <button onclick="processDonation('25.00')" class="donation-btn">
+              R$ 25,00 ??
+            </button>
+            <button onclick="processDonation('50.00')" class="donation-btn">
+              R$ 50,00 ??
+            </button>
+          </div>
+
+          <div class="custom-donation">
+            <label>Ou escolha um valor personalizado:</label>
+            <div class="custom-input-container">
+              <input
+                type="number"
+                id="customAmount"
+                placeholder="0.00"
+                min="1"
+                step="0.01"
+              />
+              <button
+                onclick="processDonation(document.getElementById('customAmount').value)"
+                class="custom-btn"
+              >
+                Doar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biblioteca Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <!-- Link para o arquivo JavaScript -->
+    <script src="script.js"></script>
+  </body>
+</html>
